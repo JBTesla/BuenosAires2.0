@@ -1,7 +1,7 @@
 from genericpath import exists
 from math import prod
 from urllib import response
-import requests #NOS PERMITE LEER EL API
+import requests #API REST
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django.contrib.auth.models import User, Group
@@ -11,11 +11,19 @@ from django.shortcuts import render,redirect
 from django.contrib import messages
 from.forms import *
 from.models import *
-# Create your views here.
+from django.urls import reverse
+from django.conf import settings
+from django.http import HttpResponse, JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.http import require_POST
 
+# Create your views here.
+#################################################
+#Index principal
 def index (request):
     return render(request, 'app/index.html')
-
+#################################################
+#Registration
 def registrar(request):
     datos = {
         'form' : formularioRegistro()
@@ -31,30 +39,44 @@ def registrar(request):
             #return redirect(to="home")
         datos["form"] = formulario
 
-    return render(request, 'app/registration/register.html', datos)
+    return render(request, 'registration/registro.html', datos)
 
+##################################################33
+#UX formularios y POST
+@login_required
 def solicitud_servicio(request):
-    return render(request, 'app/solicitud_servicio.html')
+    datos={
+        'form' : formularioSolicitudServ()
+          }
+    if request.method == 'POST':
+        formulario= formularioSolicitudServ(request.POST, files=request.FILES)
+    if formulario.is_valid():
+        formulario.save()
+        messages.success(request,'Solicitud enviada correctamente!')
+    return render(request, 'app/solicitud_servicio.html',datos)
 
+@login_required
 def productos(request):
-        response = requests.get('').json()
-        datos = {'listaJson' : response}
+        response = requests.get('https://localhost:7292/api/productos').json()
+        responseTipo = requests.get('https://localhost:7292/api/tipoProductos').json()
+
+
         cid = request.user.id
-        carritoAll= Items_Carrito.objects.all()
-        productoALL= Producto.objects.all()
-        datos ={'lista_Productos' :productoALL,
+        carritoAll= items_carrito.objects.all()
+        ##productoALL= Producto.objects.all() 
+        datos ={'lista_Productos' :response,#productoALL,
+                'lista_Tipo' :responseTipo,#carritoAll,
                 'carro': carritoAll,
                 'id': cid,
                 } 
 
         if request.method == 'POST':
-            tipo= TipoProducto()
-            tipo.tipo =request.POST.get('tipo_producto')
+            tipo= Tipo_Producto()
+            tipo.Tipo_Producto = request.POST.get('tipo_Producto')
 
             producto = Producto()
-            producto.codigo = request.POST.get('codigo_producto')
+            producto.Id_Producto = request.POST.get('codigo_producto')
             producto.nombre = request.POST.get('nombre_producto')
-            producto.marca = request.POST.get('marca_producto')
             producto.precio = request.POST.get('precio_producto')
             producto.descripcion = request.POST.get('descripcion_producto')
             producto.stock = request.POST.get('stock_producto')
@@ -62,11 +84,11 @@ def productos(request):
             producto.tipo = tipo
             
 
-            carrito = Items_Carrito()
+            carrito = items_carrito()
             carrito.user = cid
             carrito.cantidad = 0
             var_estado = True
-            if Items_Carrito.objects.filter(producto=request.POST.get('codigo_producto')).exists():
+            if items_carrito.objects.filter(producto=request.POST.get('codigo_producto')).exists():
                 for n in carritoAll:
                     if n.producto.nombre == producto.nombre:
                         n.cantidad = n.cantidad + 1
@@ -93,68 +115,48 @@ def productos(request):
                 else:
                     producto.stock == 0
                     productoA.delete()
-        return render(request, 'app/productos.html', datos)
+        return render(request, 'app/productos.html',datos) #datos)
 
+##@login_required
+def carrito(request):
+    
+
+        return render(request,'app/carrito.html')
+#################################################################
+#UX vistas
+@login_required
 def historial(request):
-    historial_compra= Despacho.objects.filter(usuario=id)
-    productos_compra=Items_Despacho.objects.filter(id_user = id)
+    historial_compra= Historial_Compra.objects.filter(usuario=id)
+    productos_compra=Boleta_Compra.objects.filter(id_user = id)
     datos={'lista_historial':historial_compra,
             'lista_productos':productos_compra}
     return render(request, 'app/historial.html',datos)
 
+@login_required
 def despacho(request):
-    historial_compra= Despacho.objects.filter(usuario=id)
-    productos_compra=Items_Despacho.objects.filter(id_user = id)
+    historial_compra= Historial_Compra.objects.filter(usuario=id)
+    productos_compra= Boleta_Compra.objects.filter(id_user = id)
     datos={'lista_historial':historial_compra,
             'lista_productos':productos_compra}
     return render(request, 'app/despacho.html',datos)
 
-def carrito(request):
-    carrito= Items_Carrito.objects.filter(user=id)
+@login_required
+def perfil(request):
+    return render(request, 'app/perfil.html')
 
-    datos={ 'listar_carrito' :carrito,
-            'usuario': 0,
-    }
-    lista = carrito
-    datos['total']=0
+@login_required
+def historial_productos(request):
+    return render(request, 'app/historial_productos')
 
-    usuario = request.user.username
-    usuario_id = request.user.id
-    susvalida=Suscripcion.objects.filter(username=usuario).get()
-    if susvalida.is_suscrito == True:
-        datos['usuario'] = 1
-        for cart in lista:
-            datos['totalsub']= round((cart.producto.precio * cart.cantidad +datos['total'])*0.95)
-            datos['total']= cart.producto.precio * cart.cantidad + datos['total']
-            datos['descuento']=round(datos['total']*0.05)
-    else:
-        datos['usuario'] = 0
-        for cart in lista:
-            datos['total']= cart.producto.precio * cart.cantidad + datos['total']
-            datos['no_sus']="Debes estar suscrito"
-  
-    if request.method == 'POST':
-        compra= Despacho()
-        compra.usuario = usuario_id
-        if susvalida.is_suscrito == True:
-            compra.total_compra= datos['totalsub']
-        else:
-            compra.total_compra= datos['total']
-        compra.estado ="pago verificado"
-        compra.save()
-        compraid=compra.id
+@login_required
+def historial_servicios(request):
+    return render(request,'app/historial_servicios')
 
-        for n in carrito:
-            despacho = Items_Despacho()
+@login_required
+def empresas_servicios(request):
+    return render(request,'app/empresas_servicios')
 
-            despacho.cantidad = n.cantidad
-            despacho.producto = n.producto
-            despacho.id_user = n.user
-            despacho.id_pago = compraid
-            despacho.save()
-        
-        carrito.delete()
-        datos['mensaje'] = 'pago verificado'
-        messages.success(request,'Pago realizado con exito')
-
-        return render(request,'carrito.html',datos)
+@login_required
+def detalles_servicios(request):
+    return render(request,'app/detalles_servicios')
+#####################################################

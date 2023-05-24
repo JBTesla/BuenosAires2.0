@@ -3,7 +3,7 @@ from django.db import models
 # Create your models here.
 class Tipo_Producto(models.Model):
     Id_Tipo_Producto = models.IntegerField(null=False,primary_key=True)
-    Tipo_Producto = models.CharField()
+    Tipo_Producto = models.CharField(max_length=50)
     Descripcion = models.TextField()
 
     def __str__(self):
@@ -13,7 +13,7 @@ class Tipo_Producto(models.Model):
 
 class Producto(models.Model):
     Id_Producto = models.IntegerField(null=False,primary_key=True)
-    Nombre = models.CharField()
+    Nombre = models.CharField(max_length=50)
     Stock =  models.IntegerField()
     Descripcion = models.TextField()
     Imagen = models.ImageField()
@@ -38,24 +38,40 @@ class Solicitud_Servicio(models.Model):
     class Meta:
         db_table = 'db.Solicitud_Servicio'
 
+#posible redundancia de datos analizar mejor los modelos historial_compras y despacho
+#analizar logica nuevamente para corregir metodos de views
+#revisar codigo anterior para ver cambio entre versiones
 
 class Historial_Compra(models.Model):
     id_historic = models.IntegerField(null=False, primary_key=True)
     usuario = models.IntegerField()
-    productos = models.ForeignKey(Producto, on_delete=models.CASCADE)
     fecha_compra = models.DateField(auto_now_add=True)
+    estado_despacho = models.CharField(max_length= 500)
+    total = models.IntegerField()
+
     
     def __str__(self):
         return self.id_historic
     class Meta:
         db_table = 'db.Historial_Compra'
 
+class Boleta_Compra(models.Model):
+    productos = models.ForeignKey(Producto, on_delete=models.CASCADE)
+    usuario = models.IntegerField()
+    cantidad = models.IntegerField()
+    id_compra = models.IntegerField()
+
+    def __str__(self):
+        return self.id_compra
+    class Meta:
+        db_table = 'db.Boleta_Compra'
+    
 class Historial_Servicio(models.Model):
     id_historic2 = models.IntegerField(null=False, primary_key=True)
     usuario = models.IntegerField()
-    servicio = models.ForeignKey()
+    servicio = models.ForeignKey(Solicitud_Servicio, on_delete=models.CASCADE)
     fecha_solicitud =models.DateField(auto_now_add=True)
-    estado = models.CharField()
+    estado = models.CharField(max_length=30)
     fecha_modificacion = models.DateField(auto_now=True)
 
     def __str__(self):
@@ -63,13 +79,9 @@ class Historial_Servicio(models.Model):
     class Meta:
         db_table = 'db.Historial_Servicio'
 
-class Despacho(models.Model):
-    id_despacho= models.IntegerField(nutt=False, primary_key=True)
+class items_carrito(models.Model):
+    id_carrito = models.IntegerField(null= False,primary_key=True)
     usuario = models.IntegerField()
-    estado = models.CharField()
+    cantidad = models.IntegerField()
     total = models.IntegerField()
-
-    def __str__(self):
-        return self.id_despacho
-    class Meta:
-        db_table = 'db.Despacho'
+    productos = models.ForeignKey(Producto, on_delete=models.CASCADE)

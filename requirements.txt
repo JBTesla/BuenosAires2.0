@@ -1,6 +1,8 @@
 #requerimientos para correr programa pip install -r requirements.txt
 
 django
+python-certifi-win32
+pip-system-certs
 pillow
 django-admin-interface
 django-crispy-forms
@@ -10,3 +12,4 @@ djangorestframework
 mssql-django
 pyodbc
 crispy_bootstrap5
+django-khipu

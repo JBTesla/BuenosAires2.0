@@ -43,7 +43,6 @@ INSTALLED_APPS = [
     'crispy_forms',# bootstrap al forms
     'crispy_bootstrap5',
     'rest_framework',
-
 ]
 
 MIDDLEWARE = [
@@ -82,11 +81,13 @@ WSGI_APPLICATION = 'BuenosAires.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'mmsql',
+        'ENGINE': 'mssql',
         'NAME': 'BuenosAires',
         'USER': '',
         'PASSWORD': '',
-        'HOST':'DESKTOP-S481K7R\SQLEXPRESS',
+        'HOST':
+        'DESKTOP-S481K7R\SQLEXPRESS',
+        #PC'DESKTOP-9L3OHOA\SQLEXPRESS',
         'PORT': '',
         'OPTIONS': {
             'driver':'ODBC Driver 17 for SQL Server',
@@ -145,6 +146,9 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media') #( cuando vamos a guardar )
 CRISPY_TEMPLATE_PACK = 'bootstrap5'
 
 MESSAGE_STORAGE = "django.contrib.messages.storage.cookie.CookieStorage"
+#api pago
+KHIPU_RECEIVER_ID ='446722'
+KHIPU_SECRET_KEY ='389496b0acf91df1a2f48381e9024050c47e2420'
 
-LOGIN_REDIRECT_URL = '/productos/'
+LOGIN_REDIRECT_URL = '/perfil/'
 LOGOUT_REDIRECT_URL = '/'
