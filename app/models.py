@@ -38,9 +38,6 @@ class Solicitud_Servicio(models.Model):
     class Meta:
         db_table = 'db.Solicitud_Servicio'
 
-#posible redundancia de datos analizar mejor los modelos historial_compras y despacho
-#analizar logica nuevamente para corregir metodos de views
-#revisar codigo anterior para ver cambio entre versiones
 
 class Historial_Compra(models.Model):
     id_historic = models.IntegerField(null=False, primary_key=True)

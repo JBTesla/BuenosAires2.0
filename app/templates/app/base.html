@@ -69,8 +69,8 @@
 								<!-- Dropdown list -->
 								<div class="dropdown-menu dropdown-menu-right">
 									<a class="dropdown-item" href="{%url 'productos'%}">Ver productos</a>
-									<a class="dropdown-item" href="{%url 'historial_productos'%}">Ver historial compras</a>
-									<a class="dropdown-item" href="{%url 'historial_servicios' %}">Ver historial Servicios</a>
+									<a class="dropdown-item" href="{%url 'historial_productos' user.id %}">Ver historial compras</a>
+									<a class="dropdown-item" href="{%url 'historial_servicios' user.id %}">Ver historial Servicios</a>
 								</div>
 							</li>
 							<li class="nav-item dropdown dropdown-slide">
@@ -89,7 +89,7 @@
 								<a class="nav-link login-button" href="{% url 'perfil' %}">Perfil</a>
 							</li>
 							<li class="nav-item">
-								<a class="nav-link login-button" href="{% url 'carrito' %}"><i class="fa fa-plus-circle"></i> Carrito</a>
+								<a class="nav-link login-button" href="{% url 'carrito' user.id %}"><i class="fa fa-plus-circle"></i> Carrito</a>
 							</li>
 						</ul>
 					</div>

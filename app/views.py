@@ -117,9 +117,42 @@ def productos(request):
                     productoA.delete()
         return render(request, 'app/productos.html',datos) #datos)
 
-##@login_required
+@login_required
 def carrito(request):
-    
+    carrito= items_carrito.objects.filter(user=id)
+
+    datos={ 'listar_carrito' :carrito,
+    }
+    lista = carrito
+    datos['total']=0
+
+    usuario = request.user.username
+    usuario_id = request.user.id
+    for cart in lista:
+            datos['total']= cart.producto.precio * cart.cantidad + datos['total']
+            datos['no_sus']="Debes estar suscrito"
+  
+    if request.method == 'POST':
+        compra= Historial_Compra()
+        compra.usuario = usuario_id
+        compra.total_compra= datos['total']
+        compra.estado ="pago verificado"
+        compra.save()
+        compraid=compra.id
+
+        for n in carrito:
+            despacho = Historial_Compra()
+
+            despacho.cantidad = n.cantidad
+            despacho.producto = n.producto
+            despacho.id_user = n.user
+            despacho.id_pago = compraid
+            despacho.save()
+        
+        #implementar validacion api de pago aqui!!!!!
+        carrito.delete()
+        datos['mensaje'] = 'pago verificado'
+        messages.success(request,'Pago realizado con exito')
 
         return render(request,'app/carrito.html')
 #################################################################
