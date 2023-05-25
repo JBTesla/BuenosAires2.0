@@ -118,7 +118,7 @@ def productos(request):
         return render(request, 'app/productos.html',datos) #datos)
 
 @login_required
-def carrito(request):
+def carrito(request, id):
     carrito= items_carrito.objects.filter(user=id)
 
     datos={ 'listar_carrito' :carrito,
@@ -126,27 +126,27 @@ def carrito(request):
     lista = carrito
     datos['total']=0
 
-    usuario = request.user.username
     usuario_id = request.user.id
     for cart in lista:
-            datos['total']= cart.producto.precio * cart.cantidad + datos['total']
+            datos['total']= cart.productos.Precio * cart.cantidad + datos['total']
             datos['no_sus']="Debes estar suscrito"
   
     if request.method == 'POST':
         compra= Historial_Compra()
+        compra.id_historic =+1
         compra.usuario = usuario_id
-        compra.total_compra= datos['total']
-        compra.estado ="pago verificado"
+        compra.total= datos['total']
+        compra.estado_despacho ="pago verificado"
         compra.save()
-        compraid=compra.id
+        compraid=compra.id_historic
 
         for n in carrito:
-            despacho = Historial_Compra()
+            despacho = Boleta_Compra()
 
             despacho.cantidad = n.cantidad
-            despacho.producto = n.producto
-            despacho.id_user = n.user
-            despacho.id_pago = compraid
+            despacho.productos = n.productos
+            despacho.usuario = n.usuario
+            despacho.id_compra = compraid
             despacho.save()
         
         #implementar validacion api de pago aqui!!!!!
@@ -157,14 +157,6 @@ def carrito(request):
         return render(request,'app/carrito.html')
 #################################################################
 #UX vistas
-@login_required
-def historial(request):
-    historial_compra= Historial_Compra.objects.filter(usuario=id)
-    productos_compra=Boleta_Compra.objects.filter(id_user = id)
-    datos={'lista_historial':historial_compra,
-            'lista_productos':productos_compra}
-    return render(request, 'app/historial.html',datos)
-
 @login_required
 def despacho(request):
     historial_compra= Historial_Compra.objects.filter(usuario=id)
@@ -178,17 +170,17 @@ def perfil(request):
     return render(request, 'app/perfil.html')
 
 @login_required
-def historial_productos(request):
+def historial_productos(request, id):
 
-    compras = Historial_Compra.objects.all()
-
-    datos={
-        'Historial':compras
-    }
+    historial_compra= Historial_Compra.objects.filter(usuario=id)
+    productos_compra=Boleta_Compra.objects.filter(id_user = id)
+    datos={'lista_historial':historial_compra,
+            'lista_productos':productos_compra}
+    
     return render(request, 'app/historial_productos', datos)
 
 @login_required
-def historial_servicios(request):
+def historial_servicios(request, id):
         
     solicitudes = Solicitud_Servicio.objects.all()
     datos ={ 
