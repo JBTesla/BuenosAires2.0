@@ -186,8 +186,24 @@ def historial_servicios(request):
     return render(request,'app/historial_servicios')
 
 @login_required
+def bandeja_entrada (request):
+    solicitudes = Solicitud_Servicio.objects.all()
+    datos ={ 
+            'bandejaEntrada' : solicitudes,
+            }
+    return render(request,'app/bandeja_entrada',datos)
+
+@login_required
 def empresas_servicios(request):
-    return render(request,'app/empresas_servicios')
+
+    responseInfo = requests.get('').json()
+    responseTipoinfo =  requests.get('').json()
+    
+    datos ={
+        'Info': responseInfo,
+        'tipoInfo' : responseTipoinfo,
+    }
+    return render(request,'app/empresas_servicios',datos)
 
 @login_required
 def detalles_servicios(request):
