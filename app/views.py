@@ -179,11 +179,22 @@ def perfil(request):
 
 @login_required
 def historial_productos(request):
-    return render(request, 'app/historial_productos')
+
+    compras = Historial_Compra.objects.all()
+
+    datos={
+        'Historial':compras
+    }
+    return render(request, 'app/historial_productos', datos)
 
 @login_required
 def historial_servicios(request):
-    return render(request,'app/historial_servicios')
+        
+    solicitudes = Solicitud_Servicio.objects.all()
+    datos ={ 
+            'bandejaEntrada' : solicitudes,
+            }
+    return render(request,'app/historial_servicios',datos)
 
 @login_required
 def bandeja_entrada (request):
@@ -196,8 +207,8 @@ def bandeja_entrada (request):
 @login_required
 def empresas_servicios(request):
 
-    responseInfo = requests.get('').json()
-    responseTipoinfo =  requests.get('').json()
+    responseInfo = requests.get('https://localhost:7292/api/info_prod_serv').json()
+    responseTipoinfo =  requests.get('https://localhost:7292/api/tipo_serv_prov').json()
     
     datos ={
         'Info': responseInfo,
