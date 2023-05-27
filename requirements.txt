@@ -12,4 +12,4 @@ djangorestframework
 mssql-django
 pyodbc
 crispy_bootstrap5
-django-khipu
+django-paypal

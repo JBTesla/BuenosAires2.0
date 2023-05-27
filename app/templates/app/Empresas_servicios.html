@@ -11,7 +11,7 @@
 		<div class="row">
 			<div class="col-md-8 offset-md-2 text-center">
 				<!-- Title text -->
-				<h3>Blog Page</h3>
+				<h3>Proveedores de servicio</h3>
 			</div>
 		</div>
 	</div>
@@ -26,99 +26,27 @@
 		<div class="row">
 			<div class="col-md-10 offset-md-1 col-lg-9 offset-lg-0">
 				<!-- Article 01 -->
-				<article>
+				
+	{% for aux in Info %}
+	{% if aux.tipo == 2 %}
+	<article>
 	<!-- Post Image -->
 	<div class="image">
 		<img src="{% static 'core/images/blog/post-1.jpg' %}" alt="article-01">
 	</div>
 	<!-- Post Title -->
-	<h3>Donec id dolor in erat imperdiet.</h3>
+	<h3>{{ aux.nom_prov_o_serv }}</h3>
 	<ul class="list-inline">
 		<li class="list-inline-item">by <a href="">Admin</a></li>
 		<li class="list-inline-item">Nov 22,2016</li>
 	</ul>
 	<!-- Post Description -->
-	<p class="">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Dolores iusto tempore voluptatum blanditiis impedit alias magni ullam facilis perspiciatis magnam!</p>
+	<p class="">{{ aux.descripcion }}</p>
 	<!-- Read more button -->
-	<a href="" class="btn btn-transparent">Read More</a>
+	<a href="" class="btn btn-transparent">M</a>
 </article>
-				<!-- Article 02 -->
-				<article>
-					<div class="post-slider owl-carousel owl-theme">
-					  <div class="item"><img src="{% static 'core/images/blog/post-2.jpg' %}" alt="Slider-Img-01"></div>
-					  <div class="item"><img src="{% static 'core/images/blog/post-2.jpg' %}" alt="Slider-Img-02"></div>
-					  <div class="item"><img src="{% static 'core/images/blog/post-2.jpg' %}" alt="Slider-Img-03"></div>
-					</div>
-					<h3>Donec id dolor in erat imperdiet.</h3>
-					<ul class="list-inline">
-						<li class="list-inline-item">by <a href="">Admin</a></li>
-						<li class="list-inline-item">Nov 22,2016</li>
-					</ul>
-					<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Dolores iusto tempore voluptatum blanditiis impedit alias magni ullam facilis perspiciatis magnam!</p>
-					<a href="" class="btn btn-transparent">Read More</a>
-				</article>
-				<!-- Article 03 -->
-				<article>
-					<div class="video overly">
-						<img src="{% static 'core/images/blog/post-3.jpg' %}" alt="video-thumbnail">
-						<div class="video-button video-box">
-							<a href="javascript:void(0)">
-								<img src="{% static 'core/images/blog/video-icon.png' %}" data-video="https://www.youtube.com/embed/g3-VxLQO7do?autoplay=1" alt="video-icon">
-							</a>
-						</div>
-					</div>
-					<h3>Donec id dolor in erat imperdiet.</h3>
-					<ul class="list-inline">
-						<li class="list-inline-item">by <a href="">Admin</a></li>
-						<li class="list-inline-item">Nov 22,2016</li>
-					</ul>
-					<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Dolores iusto tempore voluptatum blanditiis impedit alias magni ullam facilis perspiciatis magnam!</p>
-					<a href="" class="btn btn-transparent">Read More</a>
-				</article>
-				<!-- Article 04 -->
-				<article>
-	<!-- Post Image -->
-	<div class="image">
-		<img src="{% static 'core/images/blog/post-4.jpg' %}" alt="article-01">
-	</div>
-	<!-- Post Title -->
-	<h3>Donec id dolor in erat imperdiet.</h3>
-	<ul class="list-inline">
-		<li class="list-inline-item">by <a href="">Admin</a></li>
-		<li class="list-inline-item">Nov 22,2016</li>
-	</ul>
-	<!-- Post Description -->
-	<p class="">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Dolores iusto tempore voluptatum blanditiis impedit alias magni ullam facilis perspiciatis magnam!</p>
-	<!-- Read more button -->
-	<a href="" class="btn btn-transparent">Read More</a>
-</article>
-				<!-- Article 05 -->
-				<article>
-	<!-- Post Image -->
-	<div class="image">
-		<img src="{% static 'core/images/blog/post-5.jpg' %}{% static 'core/' %}" alt="article-01">
-	</div>
-	<!-- Post Title -->
-	<h3>Donec id dolor in erat imperdiet.</h3>
-	<ul class="list-inline">
-		<li class="list-inline-item">by <a href="">Admin</a></li>
-		<li class="list-inline-item">Nov 22,2016</li>
-	</ul>
-	<!-- Post Description -->
-	<p class="">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Dolores iusto tempore voluptatum blanditiis impedit alias magni ullam facilis perspiciatis magnam!</p>
-	<!-- Read more button -->
-	<a href="" class="btn btn-transparent">Read More</a>
-</article>
-				<!-- Article 06 -->
-				<article>
-					<h3>Donec id dolor in erat imperdiet.</h3>
-					<ul class="list-inline">
-						<li class="list-inline-item">by <a href="">Admin</a></li>
-						<li class="list-inline-item">Nov 22,2016</li>
-					</ul>
-					<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Dolores iusto tempore voluptatum blanditiis impedit alias magni ullam facilis perspiciatis magnam!</p>
-					<a href="" class="btn btn-transparent">Read More</a>
-				</article>
+{% endif %}
+{% endfor %}
 				<!-- Pagination -->
 				<nav aria-label="Page navigation example">
 				  <ul class="pagination">

@@ -12,113 +12,62 @@
     <script src="https://www.paypal.com/sdk/js?client-id=AeBcrJ36YY-41MQ3-p_n1PTo5WCNIZvEXV8b8l-RIA74MAIu2fcal9q2mxd9H-wLOyIPRDD94kYNH5sI&components=buttons"></script>
 {% endblock css %}
 {% block titulo %}Carrito{% endblock titulo %}
-
 {% block contenido %}
-<p class="h1 text-center" style="margin-bottom: 30px">Carrito</p>
-   <div class="row">
-     <div class="col-md-2"></div>
-     <div class="col-md-8">
-       <table class="table table-striped">
-
-        <thead>  
-            <tr>
-                <th>iduser</th>
-                <th>Nombre</th>
-                <th>Precio</th>
-                <th>Cantidad</th>
-                <th>Imagen</th>
-                <th>Botones</th>
-            </tr>
-        </thead>
-        <tbody>
-        {% for aux in maleta%}
-          <tr>
-             <td>{{ aux.usuariocarro }}</td>
-              <td>{{ aux.nombreProducto }}</td>
-              <td>{{ aux.totalv }}</td>
-              <td>{{ aux.cantidad}}</td>
-              <td><img src={{aux.imagenProducto.url}} alt="imagen" height="50px"></td>
-              <td><a class="btn btn-danger" href="{% url 'eliminar_item' aux.id %}">eliminar</a></td>
-           </tr>
-       {% endfor %}
-       {% if total != 0%}
-        {% if sub == True %}
-          <tr>
-            <th>Total</th>
-            <th>${{total}}</th>
-          </tr>  
-          <tr>
-            <th>Descuento por subscripcion</th>
-            <th>${{des}}</th>
-          </tr>
-          <tr>
-            <th>Total con descuento</th>
-            <th>${{totald}}</th>
-          </tr>
-        {% else %}
-        <tr>
-            <th>Total</th>
-            <th>${{total}}</th>
-          </tr>  
-        {% endif%}
-        {% endif %}
-        </tbody>
-       </table>
-
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-sm-2">
+      </div>
+      <div class="col-sm-8 flex-column mt-3 text-center">
+        {% for aux in listar_carrito %}
+              <div class="card mb-3 ml-5" style="width: auto; height: 300px; margin: auto auto;">
+              <div class="row no-gutters">
+                <div class="col-sm-4">
+                  <img src="{{ aux.producto.imagen.url }}" class="card-img" alt="..." style="height: 300px;">
+                </div>
+                <div class="col-sm-8">
+                  <div class="card-body">
+                    <h5 class="card-title">Nombre: {{ aux.producto.nombre }}&nbsp;|&nbsp;Tipo: {{ aux.producto.tipo }}</h5>
+                    <p class="card-text">Codigo: {{ aux.producto.codigo }}&nbsp;|&nbsp;Stock: {{ aux.producto.stock }} </p>
+                    <p class="card-text">Marca: {{ aux.producto.marca }}&nbsp;|&nbsp;Cantidad: {{ aux.cantidad}} </p>
+                    <p class="card-text">Precio: ${{ aux.producto.precio }}&nbsp;|&nbsp;Descripcion: {{ aux.producto.descripcion }} </p>
+                    <a href="{% url 'delete_item' aux.producto.codigo %}" class="btn btn-danger">Eliminar item</a>
+                  </div>
+                </div>
+              </div>
+            </div> 
+          {% endfor %}
+        </div>
     </div>
-    <div class="col-md-2"></div>
-</div>
-<div class="row">
-    <div class="col-md-2"></div>
-    
-    <div class="col-md-7"></div>
-    <div id="paypal-button-container" style="width: 200px;height: 150px;"><p>Paga aqui tu compra</p></div>
-    <script>
-    paypal.Buttons({
-      
-      createOrder() {
-        // This function sets up the details of the transaction, including the amount and line item details.
-        return fetch("/my-server/create-paypal-order", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            cart: [
-              {
-                sku: "YOUR_PRODUCT_STOCK_KEEPING_UNIT",
-                quantity: "{{ aux.cantidad }}"
-              }
-            ]
-          })
-        });
-      },
-      onApprove(data) {
-        // This function captures the funds from the transaction.
-        return fetch("/my-server/capture-paypal-order", {
-          method: "POST",
-          body: JSON.stringify({
-            orderID: data.orderID
-          })
-        })
-        .then((response) => response.json())
-        .then((details) => {
-          // This function shows a transaction success message to your buyer.
-          alert('Transaction completed by ' + details.payer.name.given_name);
-        });
-      },
-    style: {
-        layout: 'vertical',
-        color:  'blue',
-        shape:  'rect',
-        label:  'paypal'}
-    }).render('#paypal-button-container');
-    //This function displays payment buttons on your web page.
-  </script>
-    
-    <div class="col-md-1">
-     
-    </div>
-    <div class="col-md-2"></div>
-</div>
+      <div class="col-sm-2">
+      </div>
+      <div class="row">
+        <div class="col-sm-2"></div>
+        <div class="col-sm-8">
+          <div class="card" style="width:350px">
+            <div class="card-body">
+              <h4 class="card-title">Total de la compra</h4>
+              <p class="card-text">Total a pagar: ${{ total }}</p>
+              <div class="payMethod mb-3 mt-3">
+                <h6>Metodos de pago:</h6>
+                <div class="dropdown">
+                  <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    Seleccione...
+                  </button>
+                  <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                    <a class="dropdown-item" href="#">Paypal</a>
+                  </div>
+                </div>
+              </div>
+                 <form action="" method="POST" class="" enctype="multipart/form-data">
+                {% csrf_token %}
+                <input type="submit" class="btn btn-success  mt-3" value="Pagar!">
+              </form>
+              <p></p>
+              <a href="" class="btn btn-danger">Limpiar carrito</a>
+            </div>
+          </div>
+        </div>
+        <div class="col-sm-2"></div>
+      </div>
+  </div>
 {% endblock %}

@@ -1,3 +1,4 @@
+import uuid
 from genericpath import exists
 from math import prod
 from urllib import response
@@ -16,6 +17,7 @@ from django.conf import settings
 from django.http import HttpResponse, JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_POST
+from paypal.standard.forms import PayPalPaymentsForm
 
 # Create your views here.
 #################################################
@@ -119,6 +121,7 @@ def productos(request):
 
 @login_required
 def carrito(request, id):
+
     carrito= items_carrito.objects.filter(user=id)
 
     datos={ 'listar_carrito' :carrito,
@@ -129,7 +132,6 @@ def carrito(request, id):
     usuario_id = request.user.id
     for cart in lista:
             datos['total']= cart.productos.Precio * cart.cantidad + datos['total']
-            datos['no_sus']="Debes estar suscrito"
   
     if request.method == 'POST':
         compra= Historial_Compra()
@@ -148,13 +150,33 @@ def carrito(request, id):
             despacho.usuario = n.usuario
             despacho.id_compra = compraid
             despacho.save()
-        
-        #implementar validacion api de pago aqui!!!!!
         carrito.delete()
-        datos['mensaje'] = 'pago verificado'
-        messages.success(request,'Pago realizado con exito')
+        return redirect('proccess_payment')
+    return render(request,'app/carrito.html',datos)
+    
+def proccess_payment(request):
+        host = request.get.host()
+        paypal_dict ={
+            'business': settings.PAYPAL_RECEIVER_EMAIL,
+            'amount': '20.00',
+            'item_name':str(uuid.uuid4()),
+            'currency_code':'USD',
+            'notify_url': f'http://{host}{reverse("paypal-ipn")}',
+            'return_url': f'htto://{host}{reverse("paypal-return")}',
+            'cancel_return': f'http://{host}{reverse("paypal-cancel")}',
+        }
+        form = PayPalPaymentsForm(initial=paypal_dict)
+        context ={'form':form}
+        return render(request, 'app/proccess_payment')
+    
+def paypal_return(request):
+        messages.success(request, 'Tu pago se realizo con exito')
+        return redirect('historial_productos')
+    
+def paypal_cancel(request):
+        messages.error(request, 'Tu pago se cancelo')
+        return redirect('carrito')
 
-        return render(request,'app/carrito.html')
 #################################################################
 #UX vistas
 @login_required
@@ -206,9 +228,16 @@ def empresas_servicios(request):
         'Info': responseInfo,
         'tipoInfo' : responseTipoinfo,
     }
-    return render(request,'app/empresas_servicios',datos)
+    return render(request,'app/empresas_servicios.html',datos)
 
 @login_required
-def detalles_servicios(request):
-    return render(request,'app/detalles_servicios')
+def detalles_proveedor(request):
+    responseInfo = requests.get('https://localhost:7292/api/info_prod_serv').json()
+    responseTipoinfo =  requests.get('https://localhost:7292/api/tipo_serv_prov').json()
+    
+    datos ={
+        'Info': responseInfo,
+        'tipoInfo' : responseTipoinfo,
+    }
+    return render(request,'app/detalles_proveedor.html',datos)
 #####################################################
