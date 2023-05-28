@@ -43,7 +43,6 @@ INSTALLED_APPS = [
     'crispy_forms',# bootstrap al forms
     'crispy_bootstrap5',
     'rest_framework',
-    'paypal.standard.ipn',
 ]
 
 MIDDLEWARE = [
@@ -148,8 +147,6 @@ CRISPY_TEMPLATE_PACK = 'bootstrap5'
 
 MESSAGE_STORAGE = "django.contrib.messages.storage.cookie.CookieStorage"
 #api pago
-PAYPAL_TEST = True
-PAYPAL_RECEIVER_EMAIL = 'sb-r47a3q26076974@business.example.com'
 
 LOGIN_REDIRECT_URL = '/perfil/'
 LOGOUT_REDIRECT_URL = '/'

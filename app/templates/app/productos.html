@@ -71,6 +71,10 @@
 		<option value="2">Menor costo</option>
 		<option value="4">Mayor costo</option>
 	</select>
+	<form action="" method="POST">
+		{% csrf_token %}
+
+	</form>
 </div>
 
 <div class="widget price-range">
@@ -179,6 +183,12 @@
 		    		<li class="list-inline-item"><i class="fa fa-star"></i></li>
 		    	</ul>
 		    </div>
+			<form action="" method="POST">
+				{% csrf_token %}
+				<input type="hidden" name="id_producto" id="id_producto" value="{{ aux.id_Producto }}">
+				<input type="hidden" name="precio" id="precio" value="{{ aux.precio }}">
+				<input type="submit" style="cursor: pointer;" value="Agregar al carrito" class="btn btn-success btn-sm ml-auto">
+			</form>
 		</div>
 	</div>
 	{% endfor %}

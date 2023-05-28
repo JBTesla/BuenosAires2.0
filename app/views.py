@@ -59,12 +59,13 @@ def solicitud_servicio(request):
 
 @login_required
 def productos(request):
-        response = requests.get('https://localhost:7292/api/productos').json()
-        responseTipo = requests.get('https://localhost:7292/api/tipoProductos').json()
+        response = requests.get('https://localhost:7292/api/productos',verify=False).json()
+        responseTipo = requests.get('https://localhost:7292/api/tipoProductos',verify=False).json()
 
 
         cid = request.user.id
-        carritoAll= items_carrito.objects.all()
+      
+        carritoAll= items_carrito.objects.filter(usuario= cid)
         ##productoALL= Producto.objects.all() 
         datos ={'lista_Productos' :response,#productoALL,
                 'lista_Tipo' :responseTipo,#carritoAll,
@@ -73,74 +74,66 @@ def productos(request):
                 } 
 
         if request.method == 'POST':
-            tipo= Tipo_Producto()
-            tipo.Tipo_Producto = request.POST.get('tipo_Producto')
-
+            print('post post post')
             producto = Producto()
-            producto.Id_Producto = request.POST.get('codigo_producto')
-            producto.nombre = request.POST.get('nombre_producto')
-            producto.precio = request.POST.get('precio_producto')
-            producto.descripcion = request.POST.get('descripcion_producto')
-            producto.stock = request.POST.get('stock_producto')
-            producto.imagen = request.POST.get('imagen_producto')
-            producto.tipo = tipo
-            
+            producto.Id_producto = request.POST.get('id_producto')
+            producto.precio = request.POST.get('precio')
+            producto.save()
 
             carrito = items_carrito()
-            carrito.user = cid
+            carrito.usuario = cid
             carrito.cantidad = 0
-            var_estado = True
-            if items_carrito.objects.filter(producto=request.POST.get('codigo_producto')).exists():
-                for n in carritoAll:
-                    if n.producto.nombre == producto.nombre:
-                        n.cantidad = n.cantidad + 1
-                        n.save()
-                        var_estado = False 
-            else:
-                carrito.producto = producto
-                carrito.cantidad = 1
-                carrito.save()
-                var_estado = False
+
+            pro = []
+
+            for n in carritoAll:
+                pro.append(n.productos.Id_producto)
+
+            if pro:
+                print('en primer')
+                for n in pro:
+                    if n == int(request.POST.get('id_producto')):
+                        print('en segundo')
+                        for n in carritoAll:
+                            if n.productos.Id_producto == int(producto.Id_producto):
+                                print(n.cantidad)
+                                n.cantidad += 1
+                                print(n.cantidad)
+                                print('en el tercer if')
+                                n.save()
                 
-            if var_estado == True:
-                carrito.producto = producto
+            else:
+                print('en el else')
+                carrito.productos = producto
                 carrito.cantidad = 1
                 carrito.save()
-            
-            
-            codigo = request.POST.get('codigo_producto')
-            productoA = Producto.objects.get(codigo=codigo)
-            if productoA == Producto.objects.get(codigo=codigo):
-                if productoA.stock > 0:
-                    productoA.stock = productoA.stock -1
-                    productoA.save()
-                else:
-                    producto.stock == 0
-                    productoA.delete()
+                
         return render(request, 'app/productos.html',datos) #datos)
 
 @login_required
 def carrito(request, id):
-
-    carrito= items_carrito.objects.filter(user=id)
+    response = requests.get('https://localhost:7292/api/productos',verify=False).json()
+    responseTipo = requests.get('https://localhost:7292/api/tipoProductos',verify=False).json()
+    carrito= items_carrito.objects.filter(usuario=id)
 
     datos={ 'listar_carrito' :carrito,
+           'lista_productos':response,
+           'lista_tipo':responseTipo
     }
     lista = carrito
     datos['total']=0
 
     usuario_id = request.user.id
     for cart in lista:
-            datos['total']= cart.productos.Precio * cart.cantidad + datos['total']
+            datos['total']= cart.productos.precio * cart.cantidad + datos['total']
   
     if request.method == 'POST':
         compra= Historial_Compra()
-        compra.id_historic =+1
         compra.usuario = usuario_id
         compra.total= datos['total']
         compra.estado_despacho ="pago verificado"
         compra.save()
-        compraid=compra.id_historic
+        compraid=compra.id
 
         for n in carrito:
             despacho = Boleta_Compra()
@@ -151,40 +144,23 @@ def carrito(request, id):
             despacho.id_compra = compraid
             despacho.save()
         carrito.delete()
-        return redirect('proccess_payment')
+
     return render(request,'app/carrito.html',datos)
-    
-def proccess_payment(request):
-        host = request.get.host()
-        paypal_dict ={
-            'business': settings.PAYPAL_RECEIVER_EMAIL,
-            'amount': '20.00',
-            'item_name':str(uuid.uuid4()),
-            'currency_code':'USD',
-            'notify_url': f'http://{host}{reverse("paypal-ipn")}',
-            'return_url': f'htto://{host}{reverse("paypal-return")}',
-            'cancel_return': f'http://{host}{reverse("paypal-cancel")}',
-        }
-        form = PayPalPaymentsForm(initial=paypal_dict)
-        context ={'form':form}
-        return render(request, 'app/proccess_payment')
-    
-def paypal_return(request):
-        messages.success(request, 'Tu pago se realizo con exito')
-        return redirect('historial_productos')
-    
-def paypal_cancel(request):
-        messages.error(request, 'Tu pago se cancelo')
-        return redirect('carrito')
 
 #################################################################
 #UX vistas
 @login_required
 def despacho(request):
+    response = requests.get('https://localhost:7292/api/productos',verify=False).json()
+    responseTipo = requests.get('https://localhost:7292/api/tipoProductos',verify=False).json()
+
     historial_compra= Historial_Compra.objects.filter(usuario=id)
     productos_compra= Boleta_Compra.objects.filter(id_user = id)
     datos={'lista_historial':historial_compra,
-            'lista_productos':productos_compra}
+            'lista_productos':productos_compra,
+            'lista_items':response,
+            'lista_tipo':response}
+    
     return render(request, 'app/despacho.html',datos)
 
 @login_required
@@ -193,11 +169,15 @@ def perfil(request):
 
 @login_required
 def historial_productos(request, id):
+    response = requests.get('https://localhost:7292/api/productos',verify=False).json()
+    responseTipo = requests.get('https://localhost:7292/api/tipoProductos',verify=False).json()
 
     historial_compra= Historial_Compra.objects.filter(usuario=id)
     productos_compra=Boleta_Compra.objects.filter(id_user = id)
     datos={'lista_historial':historial_compra,
-            'lista_productos':productos_compra}
+            'lista_productos':productos_compra,
+            'lista_items':response,
+            'lista_tipo':response}
     
     return render(request, 'app/historial_productos', datos)
 
@@ -212,10 +192,17 @@ def historial_servicios(request, id):
 
 @login_required
 def bandeja_entrada (request):
-    solicitudes = Solicitud_Servicio.objects.all()
-    datos ={ 
-            'bandejaEntrada' : solicitudes,
-            }
+    
+    if request.method == 'POST':
+        solicitud = Historial_Servicio.objects.get(id=request.POST.get('id'))
+        solicitud.estado = request.POST.get('selecciona')
+        solicitud.save()
+
+    solicitudes = Historial_Servicio.objects.all()
+    datos = {
+            'bandejaEntrada ':solicitudes,
+            'usuario':0
+    }
     return render(request,'app/bandeja_entrada',datos)
 
 @login_required

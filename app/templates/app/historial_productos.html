@@ -21,7 +21,6 @@
 						<!-- User Name -->
 						<h5 class="text-center">Samanta Doe</h5>
 						<p>Joined February 06, 2017</p>
-						<a href="{% url 'userProfile' %}" class="btn btn-main-sm">Edit Profile</a>
 					</div>
 					<!-- Dashboard Links -->
 					<div class="widget user-dashboard-menu">
@@ -33,10 +32,10 @@
 							<li>
 								<a href="{% url 'solicitud_servicio' %}"><i class="fa fa-bolt"></i> Solicitud de servicio<span>23</span></a>
 							</li>
-								<a href="{% url 'historial_productos' %}"><i class="fa fa-bookmark-o"></i> Historial Compra <span>5</span></a>
+								<a href="{% url 'historial_productos' user.id %}"><i class="fa fa-bookmark-o"></i> Historial Compra <span>5</span></a>
 							</li>
 							<li>
-								<a href="{% url 'historial_servicios' %}"><i class="fa fa-file-archive-o"></i>Historial Solicitudes <span>12</span></a>
+								<a href="{% url 'historial_servicios' user.id %}"><i class="fa fa-file-archive-o"></i>Historial Solicitudes <span>12</span></a>
 							</li>
 							<li>
 								<a href="{% url 'index' %}"><i class="fa fa-cog"></i> Cerrar Sesion</a>
@@ -60,56 +59,29 @@
 						</thead>
 						<tbody>
 							<tr>
-								
+								{% for aux in lista_historial %}
+								{% for aux2 in  lista_items %}
+								{% if aux.productos.Id_producto == aux2.id_Producto %}
 								<td class="product-thumb">
 									<img width="80px" height="auto" src="{% static 'core/images/products/products-1.jpg' %}" alt="image description"></td>
 								<td class="product-details">
-									<h3 class="title">Macbook Pro 15inch</h3>
-									<span class="add-id"><strong>Ad ID:</strong> ng3D5hAMHPajQrM</span>
-									<span><strong>Posted on: </strong><time>Jun 27, 2017</time> </span>
-									<span class="status active"><strong>Status</strong>Active</span>
+									<h3 class="title">{{ aux2.nombre }}</h3>
+									<span class="add-id"><strong>ID compra:</strong> {{ aux.id }}</span>
+									<span><strong>Fecha de compra: </strong><time>{{ aux.fecha_compra }}</time> </span>
+									<span class="status active"><strong>Estado:</strong>{{ aux.estado }}</span>
 									<span class="location"><strong>Location</strong>Dhaka,Bangladesh</span>
 								</td>
-								<td class="product-category"><span class="categories">Laptops</span></td>
-								<td class="action" data-title="Action">
-									<div class="">
-										<ul class="list-inline justify-content-center">
-											<li class="list-inline-item">
-												<a data-toggle="tooltip" data-placement="top" title="Tooltip on top" class="view" href="">
-													<i class="fa fa-eye"></i>
-												</a>		
-											</li>
-											<li class="list-inline-item">
-												<a class="edit" href="">
-													<i class="fa fa-pencil"></i>
-												</a>		
-											</li>
-											<li class="list-inline-item">
-												<a class="delete" href="">
-													<i class="fa fa-trash"></i>
-												</a>
-											</li>
-										</ul>
-									</div>
-								</td>
-							</tr>
-							<tr>
 								
-								<td class="product-thumb">
-									<img width="80px" height="auto" src="{% static 'core/images/products/products-2.jpg' %}" alt="image description"></td>
-								<td class="product-details">
-									<h3 class="title">Study Table Combo</h3>
-									<span class="add-id"><strong>Ad ID:</strong> ng3D5hAMHPajQrM</span>
-									<span><strong>Posted on: </strong><time>Feb 12, 2017</time> </span>
-									<span class="status active"><strong>Status</strong>Active</span>
-									<span class="location"><strong>Location</strong>USA</span>
-								</td>
-								<td class="product-category"><span class="categories">Laptops</span></td>
+								{% for aux3 in lista_tipo %}
+								{% if aux2.tipo_Producto == aux3.id_Tipo_Producto %}
+								<td class="product-category"><span class="categories"></span>{{ aux3.tipo_Producto }}</td>
+								{% endif %}
+								{% endfor %}
 								<td class="action" data-title="Action">
 									<div class="">
 										<ul class="list-inline justify-content-center">
 											<li class="list-inline-item">
-												<a data-toggle="tooltip" data-placement="top" title="Tooltip on top" class="view" href="">
+												<a data-toggle="tooltip" data-placement="top" title="Tooltip on top" class="view" href="{% url 'despacho' %}">
 													<i class="fa fa-eye"></i>
 												</a>		
 											</li>
@@ -127,108 +99,9 @@
 									</div>
 								</td>
 							</tr>
-							<tr>
-								
-								<td class="product-thumb">
-									<img width="80px" height="auto" src="{% static 'core/images/products/products-3.jpg' %}" alt="image description"></td>
-								<td class="product-details">
-									<h3 class="title">Macbook Pro 15inch</h3>
-									<span class="add-id"><strong>Ad ID:</strong> ng3D5hAMHPajQrM</span>
-									<span><strong>Posted on: </strong><time>Jun 27, 2017</time> </span>
-									<span class="status active"><strong>Status</strong>Active</span>
-									<span class="location"><strong>Location</strong>Dhaka,Bangladesh</span>
-								</td>
-								<td class="product-category"><span class="categories">Laptops</span></td>
-								<td class="action" data-title="Action">
-									<div class="">
-										<ul class="list-inline justify-content-center">
-											<li class="list-inline-item">
-												<a data-toggle="tooltip" data-placement="top" title="Tooltip on top" class="view" href="">
-													<i class="fa fa-eye"></i>
-												</a>		
-											</li>
-											<li class="list-inline-item">
-												<a class="edit" href="">
-													<i class="fa fa-pencil"></i>
-												</a>		
-											</li>
-											<li class="list-inline-item">
-												<a class="delete" href="">
-													<i class="fa fa-trash"></i>
-												</a>
-											</li>
-										</ul>
-									</div>
-								</td>
-							</tr>
-							<tr>
-								
-								<td class="product-thumb">
-									<img width="80px" height="auto" src="{% static 'core/images/products/products-4.jpg' %}" alt="image description"></td>
-								<td class="product-details">
-									<h3 class="title">Macbook Pro 15inch</h3>
-									<span class="add-id"><strong>Ad ID:</strong> ng3D5hAMHPajQrM</span>
-									<span><strong>Posted on: </strong><time>Jun 27, 2017</time> </span>
-									<span class="status active"><strong>Status</strong>Active</span>
-									<span class="location"><strong>Location</strong>Dhaka,Bangladesh</span>
-								</td>
-								<td class="product-category"><span class="categories">Laptops</span></td>
-								<td class="action" data-title="Action">
-									<div class="">
-										<ul class="list-inline justify-content-center">
-											<li class="list-inline-item">
-												<a data-toggle="tooltip" data-placement="top" title="Tooltip on top" class="view" href="">
-													<i class="fa fa-eye"></i>
-												</a>		
-											</li>
-											<li class="list-inline-item">
-												<a class="edit" href="">
-													<i class="fa fa-pencil"></i>
-												</a>		
-											</li>
-											<li class="list-inline-item">
-												<a class="delete" href="">
-													<i class="fa fa-trash"></i>
-												</a>
-											</li>
-										</ul>
-									</div>
-								</td>
-							</tr>
-							<tr>
-								
-								<td class="product-thumb">
-									<img width="80px" height="auto" src="{% static 'core/images/products/products-1.jpg' %}" alt="image description"></td>
-								<td class="product-details">
-									<h3 class="title">Macbook Pro 15inch</h3>
-									<span class="add-id"><strong>Ad ID:</strong> ng3D5hAMHPajQrM</span>
-									<span><strong>Posted on: </strong><time>Jun 27, 2017</time> </span>
-									<span class="status active"><strong>Status</strong>Active</span>
-									<span class="location"><strong>Location</strong>Dhaka,Bangladesh</span>
-								</td>
-								<td class="product-category"><span class="categories">Laptops</span></td>
-								<td class="action" data-title="Action">
-									<div class="">
-										<ul class="list-inline justify-content-center">
-											<li class="list-inline-item">
-												<a data-toggle="tooltip" data-placement="top" title="Tooltip on top" class="view" href="">
-													<i class="fa fa-eye"></i>
-												</a>		
-											</li>
-											<li class="list-inline-item">
-												<a class="edit" href="">
-													<i class="fa fa-pencil"></i>
-												</a>		
-											</li>
-											<li class="list-inline-item">
-												<a class="delete" href="">
-													<i class="fa fa-trash"></i>
-												</a>
-											</li>
-										</ul>
-									</div>
-								</td>
-							</tr>
+							{% endif %}
+							{% endfor %}
+							{% endfor %}
 						</tbody>
 					</table>
 					

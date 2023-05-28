@@ -29,12 +29,12 @@
 								<a href="{% url 'perfil' %}"><i class="fa fa-user"></i> Perfil</a></li>
 							<li>
 							<li>
-								<a href="{% url 'solicitud_servicio' %}"><i class="fa fa-bolt"></i> Solicitud de servicio<span>23</span></a>
+								<a href="{% url 'solicitud_servicio'  %}"><i class="fa fa-bolt"></i> Solicitud de servicio<span>23</span></a>
 							</li>
-								<a href="{% url 'historial_productos' %}"><i class="fa fa-bookmark-o"></i> Historial Compra <span>5</span></a>
+								<a href="{% url 'historial_productos' user.id %}"><i class="fa fa-bookmark-o"></i> Historial Compra <span>5</span></a>
 							</li>
 							<li>
-								<a href="{% url 'historial_servicios' %}"><i class="fa fa-file-archive-o"></i>Historial Solicitudes <span>12</span></a>
+								<a href="{% url 'historial_servicios'user.id %}"><i class="fa fa-file-archive-o"></i>Historial Solicitudes <span>12</span></a>
 							</li>
 							<li>
 								<a href=""><i class="fa fa-cog"></i> Cerrar Sesion</a>

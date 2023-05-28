@@ -14,8 +14,6 @@ urlpatterns = [
     path('solicitud_servicio/', solicitud_servicio, name="solicitud_servicio"),
     path('despacho/', despacho, name="despacho"),
     #paypal
-    path('proccess_payment/', proccess_payment, name="proccess_payment"),
-    path('paypal-return', paypal_return, name="paypal-return"),
-    path('paypal-cancel', paypal_cancel, name="paypal-cancel")
+
 
 ]
