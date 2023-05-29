@@ -13,69 +13,61 @@
 			<th>Fecha solicitada</th>
             <th>Estado Solicitud</th>
             <th>Cambiar Estado</th>
-            {% if aux.estado == "Completado"%}
+            {% if aux.estado == "completado"%}
             <th>eliminar</th>
             {% endif %}
           </tr>
         </thead>
-        {% for aux in bandejaEntrada %}
+        {% for aux in solicitudes %}
+		{% for aux2 in historiales %}
+		{% if aux.usuario == aux2.usuario %}
         <tbody>
           <tr class="table-success">
             <td>{{ aux.usuario }}</td> 
-            <td>{{ aux.fecha_compra }}</td>
-            <td>${{ aux.total_compra }}</td>
-            <td>{{ aux.estado }}</td>
+            <td>{{ aux.Producto }}</td>
+            <td>{{ aux2.estado }}</td>
+            <td>{{ aux.fecha_servicio }}</td>
             <td>
                 <form action="# " method="POST" class="" enctype="multipart/form-data">
                     {% csrf_token %}
                 <input type="hidden" name="id" id="id" value="{{aux.id}}">
-                {% if aux.estado == "pago verificado" %}
+                {% if aux.estado == "En curso" %}
                 <select class="browser-default" name="selecciona" id="seleccion">  
                     <option value="{{ aux.estado }}" selected>{{aux.estado}}</option>
-                    <option value="preparacion">preparacion</option>
-                    <option value="reparto">reparto</option>
-                    <option value="entregado">entregado</option>
+                    <option value="aceptado">aceptado</option>
+                    <option value="rechazado">rechazado</option>
+                    <option value="entregado">completado</option>
                   </select>
                   <input type="submit" class="btn btn-success  mt-3" value="Modificar">
                 {% endif %}
-                {% if aux.estado == "preparacion" %}
+                {% if aux.estado == "aceptado" %}
                 <select class="browser-default"  name="selecciona" id="seleccion">
-                    <option value="pago verificado">pago verificado</option>
+                    <option value="En curso">En curso</option>
                     <option value="{{ aux.estado }}" selected>{{aux.estado}}</option>
-                    <option value="reparto">reparto</option>
-                    <option value="entregado">entregado</option>
+                    <option value="rechazado">rechazado</option>
+                    <option value="completado">completado</option>
                   </select>
                   <input type="submit" class="btn btn-success  mt-3" value="Modificar">  
                 {% endif %}
-                {% if aux.estado == "reparto" %}
+                {% if aux.estado == "rechazado" %}
                 <select class="browser-default"  name="selecciona" id="seleccion">
-                    <option value="pago verificado">pago verificado</option>
-                    <option value="preparacion">preparacion</option>
+                    <option value="En curso">En curso</option>
+                    <option value="aceptado">aceptado</option>
                     <option value="{{aux.estado}}" selected>{{aux.estado}}</option>
-                    <option value="entregado">entregado</option>
+                    <option value="completado">completado/option>
                   </select>
                   <input type="submit" class="btn btn-success  mt-3" value="Modificar">
-                {% endif %}
-                {% if aux.estado == "entregado" %}
-                <select class="browser-default"  name="selecciona" id="seleccion">
-                    <option value="pago verificado">pago verificado</option>
-                    <option value="preparacion">preparacion</option>
-                    <option value="reparto">reparto</option>
-                    <option value="{{ aux.estado }}" selected>{{aux.estado}}</option>
-                  </select>
-                  <input type="submit" class="btn btn-success  mt-3" value="Modificar"> 
-                {% endif %}
-                </form>
-            </td>
-            {% if aux.estado == "entregado" %}
-            <td>
-            </td>
-            {% endif %}
-          </tr>
-          {% endfor %}
-        </tbody>
-      </table>
-    </div>
-  </div>
 
+				{% if aux.estado == "completado" %}
+				<td>
+				</td>
+				{% endif %}
+			</tr>
+			{% endif %}
+			{% endfor %}
+			{% endfor %}
+			</tbody>
+		</table>
+		</div>
+	</div>
 {% endblock %}

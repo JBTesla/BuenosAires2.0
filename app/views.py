@@ -216,7 +216,8 @@ def historial_servicios(request, id):
 
 @login_required
 def bandeja_entrada (request):
-    solicitudes = Historial_Servicio.objects.all()
+    solicitudes = Solicitud_Servicio.objects.all()
+    historiales =Historial_Servicios.objets.all()
 
     if request.method == 'POST':
         solicitud = Historial_Servicio.objects.get(id=request.POST.get('id'))
@@ -225,7 +226,8 @@ def bandeja_entrada (request):
 
 
     datos = {
-            'bandejaEntrada ':solicitudes,
+            'solicitudes':solicitudes,
+            'historiales':historiales,
             'usuario':0
     }
     return render(request,'app/bandeja_entrada.html',datos)
