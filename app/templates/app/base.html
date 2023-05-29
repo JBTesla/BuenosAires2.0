@@ -69,8 +69,10 @@
 								<!-- Dropdown list -->
 								<div class="dropdown-menu dropdown-menu-right">
 									<a class="dropdown-item" href="{%url 'productos'%}">Ver productos</a>
+                  {% if user.is_staff == 0 %}
 									<a class="dropdown-item" href="{%url 'historial_productos' user.id %}">Ver historial compras</a>
 									<a class="dropdown-item" href="{%url 'historial_servicios' user.id %}">Ver historial Servicios</a>
+                  {% endif %}
 								</div>
 							</li>
 							<li class="nav-item dropdown dropdown-slide">
@@ -79,8 +81,10 @@
 								</a>
 								<!-- Dropdown list -->
 								<div class="dropdown-menu dropdown-menu-right">
+                  {% if user.is_staff == 0 %}
 									<a class="dropdown-item" href="{%url 'empresas_servicios' %}">Empresas</a>
 									<a class="dropdown-item" href="{%url 'detalles_proveedor' %}">Servicios</a>
+                  {% endif %}
 								</div>
 							</li>
 						</ul>
@@ -88,9 +92,11 @@
 							<li class="nav-item">
 								<a class="nav-link login-button" href="{% url 'perfil' %}">Perfil</a>
 							</li>
+              {% if user.is_staff == 0 %}
 							<li class="nav-item">
 								<a class="nav-link login-button" href="{% url 'carrito' user.id %}"><i class="fa fa-plus-circle"></i> Carrito</a>
 							</li>
+              {% endif %}
 						</ul>
 					</div>
 				</nav>

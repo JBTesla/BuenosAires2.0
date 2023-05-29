@@ -25,10 +25,10 @@
 					<!-- Dashboard Links -->
 					<div class="widget user-dashboard-menu">
 						<ul>
-
 							<li>
 								<a href="{% url 'perfil' %}"><i class="fa fa-user"></i> Perfil</a></li>
-							<li>
+							</li>
+							{% if user.is_staff == 0 %}
 							<li>
 								<a href="{% url 'solicitud_servicio' %}"><i class="fa fa-bolt"></i> Solicitud de servicio<span>23</span></a>
 							</li>
@@ -38,8 +38,14 @@
 							<li>
 								<a href="{% url 'historial_servicios' user.id %}"><i class="fa fa-file-archive-o"></i>Historial Solicitudes <span>12</span></a>
 							</li>
+							{% endif %}
+							{% if user.is_staff == 1 %}
 							<li>
-								<a href="{% url 'index' %}"><i class="fa fa-cog"></i> Cerrar Sesion</a>
+								<a href="{% url 'bandeja_entrada' %}"><i class="fa fa-file-archive-o"></i>Historial Solicitudes <span>12</span></a>
+							</li>
+							{% endif %}
+							<li>
+								<a href="{% url 'logout'%}"><i class="fa fa-cog"></i> Cerrar Sesion</a>
 							</li>
 						</ul>
 					</div>
@@ -53,7 +59,7 @@
 						<thead>
 							<tr>
 								<th>Image</th>
-								<th>Product Title</th>
+								<th>Producto</th>
 								<th class="text-center">Category</th>
 								<th class="text-center">Action</th>
 							</tr>
@@ -100,11 +106,11 @@
 										</ul>
 									</div>
 								</td>
+								{% endif %}
+								{% endfor %}
+								{% endfor %}
+								{% endfor %}
 							</tr>
-							{% endif %}
-							{% endfor %}
-							{% endfor %}
-							{% endfor %}
 						</tbody>
 					</table>
 					

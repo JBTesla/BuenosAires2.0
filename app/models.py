@@ -39,7 +39,7 @@ class Historial_Compra(models.Model):
     
 class Historial_Servicio(models.Model):
     usuario = models.IntegerField(null=True)
-    servicio = models.ForeignKey(Solicitud_Servicio, on_delete=models.DO_NOTHING,db_constraint=False)
+    servicio= models.ForeignKey(Solicitud_Servicio, on_delete=models.DO_NOTHING,db_constraint=False)
     fecha_solicitud =models.DateField(auto_now_add=True)
     estado = models.CharField(max_length=30)
     fecha_modificacion = models.DateField(auto_now=True)

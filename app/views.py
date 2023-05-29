@@ -56,11 +56,21 @@ def solicitud_servicio(request):
     if request.method == 'POST':
         print('Primer paso')
         print(user)
-        formulario = formularioSolicitudServ(request.POST,files=request.FILES)
-    
+        formulario = formularioSolicitudServ(request.POST,files=request.FILES, initial={'usuario':'0'})
+        
+
         if formulario.is_valid():
+            #formulario.cleaned_data["usuario"] = user
             print('es valido')
-            formulario.save()
+            fs=formulario.save(commit=False)
+            fs.usuario = user
+            fs.save()
+
+            historial_servicios = Historial_Servicio()
+            historial_servicios.servicio = fs
+            historial_servicios.usuario = user
+            historial_servicios.estado = "En curso"
+            historial_servicios.save()
            
             messages.success(request,'Solicitud enviada correctamente!')
 
@@ -195,26 +205,35 @@ def historial_productos(request, id):
 @login_required
 def historial_servicios(request, id):
         
-    solicitudes = Solicitud_Servicio.objects.all()
+    solicitudes = Solicitud_Servicio.objects.filter(usuario=id)
+    historial_servicios = Historial_Servicio.objects.filter(usuario=id)
     datos ={ 
-            'bandejaEntrada' : solicitudes,
+            'solicitud' : solicitudes,
+            'historial' : historial_servicios,
             }
-    return render(request,'app/historial_servicios',datos)
+    
+    return render(request,'app/historial_servicios.html',datos)
 
 @login_required
 def bandeja_entrada (request):
-    
+    solicitudes = Historial_Servicio.objects.all()
+
     if request.method == 'POST':
         solicitud = Historial_Servicio.objects.get(id=request.POST.get('id'))
         solicitud.estado = request.POST.get('selecciona')
         solicitud.save()
 
-    solicitudes = Historial_Servicio.objects.all()
+
     datos = {
             'bandejaEntrada ':solicitudes,
             'usuario':0
     }
-    return render(request,'app/bandeja_entrada',datos)
+    return render(request,'app/bandeja_entrada.html',datos)
+
+@login_required
+def estado_servicio(request):
+
+    return render(request, 'app/estado_servicio.html')
 
 @login_required
 def empresas_servicios(request):

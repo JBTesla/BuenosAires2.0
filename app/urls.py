@@ -13,6 +13,7 @@ urlpatterns = [
     path('carrito/<id>/', carrito, name="carrito"),
     path('solicitud_servicio/', solicitud_servicio, name="solicitud_servicio"),
     path('despacho/', despacho, name="despacho"),
+    path('bandeja_entrada', bandeja_entrada, name="bandeja_entrada")
     #paypal
 
 

@@ -200,12 +200,14 @@
 		    		<li class="list-inline-item"><i class="fa fa-star"></i></li>
 		    	</ul>
 		    </div>
+			{% if user.is_staff == 0 %}
 			<form action="" method="POST">
 				{% csrf_token %}
 				<input type="hidden" name="id_producto" id="id_producto" value="{{ aux.id_Producto }}">
 				<input type="hidden" name="precio" id="precio" value="{{ aux.precio }}">
 				<input type="submit" style="cursor: pointer;" value="Agregar al carrito" class="btn btn-success btn-sm ml-auto">
 			</form>
+			{% endif %}
 		</div>
 	</div>
 	{% endfor %}

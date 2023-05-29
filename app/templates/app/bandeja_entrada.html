@@ -1,104 +1,81 @@
-{% extends 'app/base.html' %}
+{%extends 'app/base.html'%}
 {% load static %}
 {% block contenido %}
-
-<!--==================================
-=            User Profile            =
-===================================-->
-<section class="dashboard section">
-	<!-- Container Start -->
-	<div class="container">
-		<!-- Row Start -->
-		<div class="row">
-			<div class="col-md-10 offset-md-1 col-lg-4 offset-lg-0">
-				<div class="sidebar">
-					<!-- User Widget -->
-					<div class="widget user-dashboard-profile">
-						<!-- User Image -->
-						<div class="profile-thumb">
-							<img src="{% static 'core/images/user/user-thumb.jpg' %}" alt="" class="rounded-circle">
-						</div>
-						<!-- User Name -->
-						<h5 class="text-center">Samanta Doe</h5>
-						<p>Joined February 06, 2017</p>
-						<a href="{% url 'userProfile' %}" class="btn btn-main-sm">Edit Profile</a>
-					</div>
-					<!-- Dashboard Links -->
-					<div class="widget user-dashboard-menu">
-						<ul>
-
-							<li>
-								<a href="{% url 'perfil' %}"><i class="fa fa-user"></i> Perfil</a></li>
-							<li>
-							<li>
-								<a href="{% url 'solicitud_servicio' %}"><i class="fa fa-bolt"></i> Solicitud de servicio<span>23</span></a>
-							</li>
-							<li>
-								<a href="{% url 'historial_productos' user.id %}"><i class="fa fa-bookmark-o"></i> Historial Compra <span>5</span></a>
-							</li>
-							<li>
-								<a href="{% url 'historial_servicios' user.id %}"><i class="fa fa-file-archive-o"></i>Historial Solicitudes <span>12</span></a>
-							</li>
-							<li>
-								<a href=""><i class="fa fa-cog"></i> Cerrar Sesion</a>
-							</li>
-						</ul>
-					</div>
-				</div>
-			</div>
-			<div class="col-md-10 offset-md-1 col-lg-8 offset-lg-0">
-				<!-- Recently Favorited -->
-				<div class="widget dashboard-container my-adslist">
-					<h3 class="widget-header">My Ads</h3>
-					<table class="table table-responsive product-dashboard-table">
-						<thead>
-							<tr>
-								<th>Image</th>
-								<th>Product Title</th>
-								<th class="text-center">Category</th>
-								<th class="text-center">Action</th>
-							</tr>
-						</thead>
-						<tbody>
-							<tr>
-								{% for aux in bandejaEntrada  %}
-								<td class="product-thumb">
-									<img width="80px" height="auto" src="{% static 'core/images/products/products-1.jpg' %}" alt="image description"></td>
-								<td class="product-details">
-									<h3 class="title">Mantenimiento</h3>
-									<span class="add-id"><strong>ID usuario:</strong> {{ aux.usuario }}</span>
-									<span class="add-id"><strong>ID producto:</strong> {{ aux.servicio.Producto }}</span>
-									<span><strong>Creacion solicitud: </strong><time>{{ aux.fecha_solicitud }}</time> </span>
-									<span><strong>Fecha solicitada: </strong><time>{{ aux.servicio.fecha_servicio }}</time> </span>
-									<span class="status active"><strong>Estado Solicitud </strong>{{ aux.estado }}</span>
-								</td>
-								<td class="action" data-title="Action">
-									<div class="">
-										<ul class="list-inline justify-content-center">
-											<li class="list-inline-item">
-												<a class="edit" href="{% url 'estado_solicitud' %}">
-													<i class="fa fa-pencil"></i>
-												</a>		
-											</li>
-											<li class="list-inline-item">
-												<a class="delete" href="">
-													<i class="fa fa-trash"></i>
-												</a>
-											</li>
-										</ul>
-									</div>
-								</td>
-								{% endfor %}
-							</tr>
-						</tbody>
-					</table>
-					
-				</div>
-			</div>
-		</div>
-		<!-- Row End -->
-	</div>
-	<!-- Container End -->
-</section>
+<div class="row">
+    <div class="col-sm-2">
+    </div>
+    <div class="col-sm-8">
+      <table class="table mt-3">
+        <thead class="thead-dark">
+          <tr>
+            <th>Solicitante</th>
+            <th>ID producto</th>
+			<th>Fecha solicitada</th>
+            <th>Estado Solicitud</th>
+            <th>Cambiar Estado</th>
+            {% if aux.estado == "Completado"%}
+            <th>eliminar</th>
+            {% endif %}
+          </tr>
+        </thead>
+        {% for aux in bandejaEntrada %}
+        <tbody>
+          <tr class="table-success">
+            <td>{{ aux.usuario }}</td> 
+            <td>{{ aux.fecha_compra }}</td>
+            <td>${{ aux.total_compra }}</td>
+            <td>{{ aux.estado }}</td>
+            <td>
+                <form action="# " method="POST" class="" enctype="multipart/form-data">
+                    {% csrf_token %}
+                <input type="hidden" name="id" id="id" value="{{aux.id}}">
+                {% if aux.estado == "pago verificado" %}
+                <select class="browser-default" name="selecciona" id="seleccion">  
+                    <option value="{{ aux.estado }}" selected>{{aux.estado}}</option>
+                    <option value="preparacion">preparacion</option>
+                    <option value="reparto">reparto</option>
+                    <option value="entregado">entregado</option>
+                  </select>
+                  <input type="submit" class="btn btn-success  mt-3" value="Modificar">
+                {% endif %}
+                {% if aux.estado == "preparacion" %}
+                <select class="browser-default"  name="selecciona" id="seleccion">
+                    <option value="pago verificado">pago verificado</option>
+                    <option value="{{ aux.estado }}" selected>{{aux.estado}}</option>
+                    <option value="reparto">reparto</option>
+                    <option value="entregado">entregado</option>
+                  </select>
+                  <input type="submit" class="btn btn-success  mt-3" value="Modificar">  
+                {% endif %}
+                {% if aux.estado == "reparto" %}
+                <select class="browser-default"  name="selecciona" id="seleccion">
+                    <option value="pago verificado">pago verificado</option>
+                    <option value="preparacion">preparacion</option>
+                    <option value="{{aux.estado}}" selected>{{aux.estado}}</option>
+                    <option value="entregado">entregado</option>
+                  </select>
+                  <input type="submit" class="btn btn-success  mt-3" value="Modificar">
+                {% endif %}
+                {% if aux.estado == "entregado" %}
+                <select class="browser-default"  name="selecciona" id="seleccion">
+                    <option value="pago verificado">pago verificado</option>
+                    <option value="preparacion">preparacion</option>
+                    <option value="reparto">reparto</option>
+                    <option value="{{ aux.estado }}" selected>{{aux.estado}}</option>
+                  </select>
+                  <input type="submit" class="btn btn-success  mt-3" value="Modificar"> 
+                {% endif %}
+                </form>
+            </td>
+            {% if aux.estado == "entregado" %}
+            <td>
+            </td>
+            {% endif %}
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
 
 {% endblock %}
