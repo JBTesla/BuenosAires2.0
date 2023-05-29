@@ -10,6 +10,9 @@ class formularioRegistro(UserCreationForm):
         fields = ['username','first_name','last_name','email','password1','password2']
 
 class formularioSolicitudServ(ModelForm):
+    fecha_servicio = forms.DateField(widget=forms.DateInput(attrs={'type': 'date'}))
+    usuario = forms.IntegerField(widget=forms.HiddenInput())
     class Meta:
         model = Solicitud_Servicio
-        fields =['Producto','Descripcion']
+        fields =['usuario','Producto','Descripcion', 'fecha_servicio']
+        

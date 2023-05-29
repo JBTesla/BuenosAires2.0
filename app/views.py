@@ -47,14 +47,23 @@ def registrar(request):
 #UX formularios y POST
 @login_required
 def solicitud_servicio(request):
+    response = requests.get('https://localhost:7292/api/productos',verify=False).json()
     datos={
-        'form' : formularioSolicitudServ()
+        'form' : formularioSolicitudServ(),
+        'lista_productos' : response
           }
+    user = request.user.id
     if request.method == 'POST':
-        formulario= formularioSolicitudServ(request.POST, files=request.FILES)
-    if formulario.is_valid():
-        formulario.save()
-        messages.success(request,'Solicitud enviada correctamente!')
+        print('Primer paso')
+        print(user)
+        formulario = formularioSolicitudServ(request.POST,files=request.FILES)
+    
+        if formulario.is_valid():
+            print('es valido')
+            formulario.save()
+           
+            messages.success(request,'Solicitud enviada correctamente!')
+
     return render(request, 'app/solicitud_servicio.html',datos)
 
 @login_required
@@ -154,12 +163,13 @@ def despacho(request):
     response = requests.get('https://localhost:7292/api/productos',verify=False).json()
     responseTipo = requests.get('https://localhost:7292/api/tipoProductos',verify=False).json()
 
+    id= request.user.id
+
     historial_compra= Historial_Compra.objects.filter(usuario=id)
-    productos_compra= Boleta_Compra.objects.filter(id_user = id)
+    productos_compra= Boleta_Compra.objects.filter(usuario=id)
     datos={'lista_historial':historial_compra,
             'lista_productos':productos_compra,
-            'lista_items':response,
-            'lista_tipo':response}
+            'lista_items':response,}
     
     return render(request, 'app/despacho.html',datos)
 
@@ -173,13 +183,14 @@ def historial_productos(request, id):
     responseTipo = requests.get('https://localhost:7292/api/tipoProductos',verify=False).json()
 
     historial_compra= Historial_Compra.objects.filter(usuario=id)
-    productos_compra=Boleta_Compra.objects.filter(id_user = id)
+    productos_compra=Boleta_Compra.objects.filter(usuario=id)
+
     datos={'lista_historial':historial_compra,
             'lista_productos':productos_compra,
             'lista_items':response,
             'lista_tipo':response}
     
-    return render(request, 'app/historial_productos', datos)
+    return render(request, 'app/historial_productos.html', datos)
 
 @login_required
 def historial_servicios(request, id):

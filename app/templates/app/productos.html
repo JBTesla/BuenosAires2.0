@@ -1,7 +1,24 @@
 {% extends 'app/base.html' %}
 {% load static %}
 {% block contenido %}
-
+<script>
+	function token(name) {
+	var cookieValue = null;
+	if (document.cookie && document.cookie !== '') {
+		var cookies = document.cookie.split(';');
+		for (var i = 0; i < cookies.length; i++) {
+			var cookie = cookies[i].trim();
+			// Does this cookie string begin with the name we want?
+			if (cookie.substring(0, name.length + 1) === (name + '=')) {
+				cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+				break;
+			}
+		}
+	}
+	return cookieValue;
+  }
+  var csrftoken = token('csrftoken');
+</script>
 <section class="page-search">
 	<div class="container">
 		<div class="row">

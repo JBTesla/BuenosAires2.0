@@ -13,7 +13,7 @@
         </div>
         <div class="col-md-8">
           <div class="card-body text-center ">
-            <h5 class="card-title">Estado: {{aux.estado}}</h5>
+            <h5 class="card-title" style="color: white;" >Estado: {{aux.estado_despacho}}</h5>
             <div class="row">
               <div class="col-sm-4  d-flex justify-content-center">
                 <i class="fa-solid fa-cart-arrow-down fa-4x mt-5"></i>
@@ -25,7 +25,7 @@
                 <i class="fa-solid fa-house-circle-check fa-4x mt-5"></i>
               </div>
             </div>
-            {% if aux.estado == "pago verificado" %}
+            {% if aux.estado_despacho == "pago verificado" %}
             <div class="row">
             <div class="col-sm-4">Preparacion</div>
             <div class="col-sm-4">Reparto</div>
@@ -35,7 +35,7 @@
               <div class="progress-bar bg-success" role="progressbar" style="width: 5%;" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
             </div>
             {% endif %}
-            {% if aux.estado == "preparacion" %}
+            {% if aux.estado_despacho == "preparacion" %}
             <div class="row">
               <div class="col-sm-4">Preparacion</div>
               <div class="col-sm-4">Reparto</div>
@@ -45,7 +45,7 @@
                 <div class="progress-bar bg-success" role="progressbar" style="width: 25%;" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
               </div>
             {% endif %}
-            {% if aux.estado == "reparto" %}
+            {% if aux.estado_despacho == "reparto" %}
             <div class="row">
               <div class="col-sm-4">Preparacion</div>
               <div class="col-sm-4">Reparto</div>
@@ -55,7 +55,7 @@
                 <div class="progress-bar bg-success" role="progressbar" style="width: 50%;" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
               </div>
             {% endif %}
-            {% if aux.estado == "entregado" %}
+            {% if aux.estado_despacho == "entregado" %}
             <div class="row">
               <div class="col-sm-4">Preparacion</div>
               <div class="col-sm-4">Reparto</div>
@@ -75,24 +75,29 @@
         <div class="col-md-2">
         </div>
         <div class="col-md-8">
-          <h5 class="card-title">Orden despacho: GP00{{aux.id}}</h5>
-          {% for aux in lista_productos %}
+          <h5 class="card-title" style="color: white;">Orden despacho: BA00{{aux.id}}</h5>
           <div class="card-body">
             <div class="row">
               <div class="col-sm-2"><img  src="" style="width: 100px;"></div>
               <div class="col-sm-2"></div>
+              {% for aux2 in lista_items %}
+              {% for aux3 in lista_productos %}
+              {% if aux3.productos.Id_producto == aux2.id_Producto  %}
               <div class="col-sm-5">
-                <p class="card-text">
-                 Producto: 
+                <p class="card-text" style="color: white;">
+                 Producto: {{ aux2.nombre}}
                 </p>
-                <p class="text">
-                    cantidad/es: {{aux.cantidad}} 
+                <p class="text" style="color: white;">
+                    cantidad/es: {{aux3.cantidad}} 
                 </p>
               </div>
+              {% endif %}
+              {% endfor %}
+              {% endfor %}
             </div>
           </div>
-          {% endfor %}
-          <p class="text"> Total: ${{aux.total_compra}}</p>
+          <p class="text" style="color: white;"> Total: ${{aux.total}}</p>
+          <p><a href="{% url 'historial_productos' user.id %}" class="btn btn-secondary">Volver al historial</a></p>
         </div>
       </div>
     </div>
