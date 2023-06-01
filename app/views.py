@@ -17,7 +17,7 @@ from django.conf import settings
 from django.http import HttpResponse, JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_POST
-from paypal.standard.forms import PayPalPaymentsForm
+
 
 # Create your views here.
 #################################################
@@ -217,7 +217,7 @@ def historial_servicios(request, id):
 @login_required
 def bandeja_entrada (request):
     solicitudes = Solicitud_Servicio.objects.all()
-    historiales =Historial_Servicios.objets.all()
+    historiales = Historial_Servicio.objects.all()
 
     if request.method == 'POST':
         solicitud = Historial_Servicio.objects.get(id=request.POST.get('id'))
@@ -240,8 +240,8 @@ def estado_servicio(request):
 @login_required
 def empresas_servicios(request):
 
-    responseInfo = requests.get('https://localhost:7292/api/info_prod_serv').json()
-    responseTipoinfo =  requests.get('https://localhost:7292/api/tipo_serv_prov').json()
+    responseInfo = requests.get('https://localhost:7292/api/info_prod_serv',verify=False).json()
+    responseTipoinfo =  requests.get('https://localhost:7292/api/tipo_serv_prov',verify=False).json()
     
     datos ={
         'Info': responseInfo,
@@ -251,8 +251,8 @@ def empresas_servicios(request):
 
 @login_required
 def detalles_proveedor(request):
-    responseInfo = requests.get('https://localhost:7292/api/info_prod_serv').json()
-    responseTipoinfo =  requests.get('https://localhost:7292/api/tipo_serv_prov').json()
+    responseInfo = requests.get('https://localhost:7292/api/info_prod_serv',verify=False).json()
+    responseTipoinfo =  requests.get('https://localhost:7292/api/tipo_serv_prov',verify=False).json()
     
     datos ={
         'Info': responseInfo,

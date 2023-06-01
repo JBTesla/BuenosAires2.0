@@ -30,13 +30,13 @@
 							</li>
 							{% if user.is_staff == 0 %}
 							<li>
-								<a href="{% url 'solicitud_servicio' %}"><i class="fa fa-bolt"></i> Solicitud de servicio<span>23</span></a>
+								<a href="{% url 'solicitud_servicio' %}"><i class="fa fa-solid fa-gears"></i> Solicitud de servicio<span>23</span></a>
 							</li>
 							<li>
-								<a href="{% url 'historial_productos' user.id %}"><i class="fa fa-bookmark-o"></i> Historial Compra <span>5</span></a>
+								<a href="{% url 'historial_productos' user.id %}"><i class="fa-solid fa-box"></i>Historial Compra <span>5</span></a>
 							</li>
 							<li>
-								<a href="{% url 'historial_servicios' user.id %}"><i class="fa fa-file-archive-o"></i>Historial Solicitudes <span>12</span></a>
+								<a href="{% url 'historial_servicios' user.id %}"><i class="fa-solid fa-envelope"></i>Historial Solicitudes <span>12</span></a>
 							</li>
 							{% endif %}
 							{% if user.is_staff == 1 %}
@@ -45,7 +45,7 @@
 							</li>
 							{% endif %}
 							<li>
-								<a href="{% url 'logout'%}"><i class="fa fa-cog"></i> Cerrar Sesion</a>
+								<a href="{% url 'logout'%}"><i class="fa-solid fa-right-from-bracket"></i> Cerrar Sesion</a>
 							</li>
 						</ul>
 					</div>
@@ -54,20 +54,20 @@
 			<div class="col-md-10 offset-md-1 col-lg-8 offset-lg-0">
 				<!-- Recently Favorited -->
 				<div class="widget dashboard-container my-adslist">
-					<h3 class="widget-header">My Ads</h3>
+					<h3 class="widget-header">Mis solicitudes</h3>
 					<table class="table table-responsive product-dashboard-table">
 						<thead>
 							<tr>
 								<th>Imagen</th>
 								<th>Solicitud</th>
-								<th class="text-center">Accion</th>
+								<th class="text-center">Pago</th>
 							</tr>
 						</thead>
 						<tbody>
+							{% for aux in solicitud %}
+							{% for aux2 in historial %}
+							{% if aux.id == aux2.servicio_id %}
 							<tr>
-								{% for aux in solicitud %}
-								{% for aux2 in historial %}
-								{% if aux.id == aux2.servicio_id %}
 								<td class="product-thumb">
 									<img width="80px" height="auto" src="{% static 'core/images/products/products-1.jpg' %}" alt="image description"></td>
 								<td class="product-details">
@@ -79,24 +79,20 @@
 								</td>
 								<td class="action" data-title="Action">
 									<div class="">
+										{% if aux2.estado == completado %}
 										<ul class="list-inline justify-content-center">
 											<li class="list-inline-item">
 												<a class="edit" href="">
-													<i class="fa fa-pencil"></i>
+													<i class="fa fa-cc-paypal"></i>
 												</a>		
 											</li>
-											<li class="list-inline-item">
-												<a class="delete" href="">
-													<i class="fa fa-trash"></i>
-												</a>
-											</li>
-										</ul>
+										{% endif %}
 									</div>
 								</td>
-								{% endif %}
-								{% endfor %}
-								{% endfor %}
 							</tr>
+							{% endif %}
+							{% endfor %}
+							{% endfor %}
 						</tbody>
 					</table>
 					

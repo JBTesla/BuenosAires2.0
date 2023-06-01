@@ -86,7 +86,7 @@ DATABASES = {
         'USER': '',
         'PASSWORD': '',
         'HOST':
-        'DESKTOP-S481K7R\SQLEXPRESS',
+        'DESKTOP-TCV6NRE\SQLEXPRESS',
         #PC'DESKTOP-9L3OHOA\SQLEXPRESS',
         'PORT': '',
         'OPTIONS': {
